@@ -2,18 +2,23 @@
 const path = require("path");
 
 // set environment
+// in development, use a .env file or .env.local file to load environment variables
 const { ENV } = require("./lib/env");
-if (ENV().NODE_ENV !== "production")
-  require("dotenv").config({ path: path.join(__dirname, ".env.local") });
+if (ENV().NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  if (dotenv.config().error)
+    if (dotenv.config({ path: path.join(__dirname, ".env.local") }).error)
+      console.log("No env file found!");
+}
 
 // external package imports
-// const bcrypt = require("bcrypt");
 const chalk = require("chalk");
 const express = require("express");
 
 // library imports
 const AsyncSQL = require("./lib/AsyncSQL");
 const multer = require("multer");
+const { chownSync } = require("fs");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -28,6 +33,7 @@ const registerUserFields = [
   "password",
   "phone",
 ];
+
 app.post("/registeruser", multer().none(), async function (req, res) {
   try {
     const values = ["US0003"]; // userid will be generated
