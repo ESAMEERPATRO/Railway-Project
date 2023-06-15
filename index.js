@@ -7,7 +7,7 @@ if (ENV().NODE_ENV !== "production")
   require("dotenv").config({ path: path.join(__dirname, ".env.local") });
 
 // external package imports
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const chalk = require("chalk");
 const express = require("express");
 
@@ -154,12 +154,7 @@ app.post("/signindealer", multer().none(), async function (request, response) {
     const querys = `SELECT * FROM admin_table WHERE dealer_id = ? AND dealer_password = ?`;
 
     // Execute the query
-    const [error, results] = await sql.query(querys, [userphone, password]);
-
-    if (error) {
-      console.error("Error executing the query:", error);
-      return;
-    }
+    const [results] = await sql.query(querys, [userphone, password]);
 
     // Process the results
     if (results.length === 0) {
